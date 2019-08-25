@@ -1,0 +1,30 @@
+version: "3.4"
+
+services:
+    app:
+        <<: &app
+            build:
+                context: ./
+                dockerfile: ./Dockerfile
+            restart: always
+            volumes:
+                - ./app:/var/app
+        entrypoint: 'tail -f'
+        depends_on:
+            - queue
+
+    worker1:
+        <<: *app
+        entrypoint: 'php /var/app/bin/console worker:run'
+        depends_on:
+            - app
+
+    worker2:
+        <<: *app
+        entrypoint: 'php /var/app/bin/console worker:run'
+        depends_on:
+            - app
+
+    queue:
+        image: schickling/beanstalkd
+        restart: always
