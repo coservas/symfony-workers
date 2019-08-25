@@ -11,7 +11,7 @@ DC_CMD_EXEC := $(DC_CMD) exec
 	add-job bash ps status logs
 
 add-job: ## Add a simple job
-	@$(DC_CMD_EXEC) app /var/app/bin/console leezy:pheanstalk:put default 'Hello, World!' 1024 5
+	@$(DC_CMD_EXEC) app /var/app/bin/console leezy:pheanstalk:put default 'Hello, World!' 1024 3
 
 build: ## Build all or c=<name> services
 	@$(DC_CMD) build $(c)
