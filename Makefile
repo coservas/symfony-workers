@@ -7,11 +7,20 @@ DC_CMD := $(DOCKER_COMPOSE) -f $(DC_FILE)
 DC_CMD_EXEC := $(DC_CMD) exec
 
 .PHONY:
-	build start stop restart \
-	bash ps status logs
+	install build start stop restart \
+	add-job bash ps status logs
+
+add-job: ## Add a simple job
+	@$(DC_CMD_EXEC) app /var/app/bin/console leezy:pheanstalk:put default 'Hello, World!' 1024 5
 
 build: ## Build all or c=<name> services
 	@$(DC_CMD) build $(c)
+
+install: ## Install application
+	@make build
+	@make start c=app
+	@$(DC_CMD_EXEC) app /bin/bash -c "cd /var/app && composer install --no-interaction --ansi --no-suggest --prefer-dist"
+	@make restart
 
 start: ## Start all or c=<name> containers in background
 	@$(DC_CMD) up -d $(c)
@@ -32,6 +41,3 @@ status: ## Show status of containers
 
 logs: ## Show all or c=<name> logs of containers
 	@$(DC_CMD) logs -f $(c)
-
-add-job: ## Add a simple job
-	@$(DC_CMD) exec app /var/app/bin/console leezy:pheanstalk:put default 'Hello, World!' 1024 3
