@@ -1,0 +1,5 @@
+leezy_pheanstalk:
+    pheanstalks:
+        primary:
+            server: queue
+            default: true
